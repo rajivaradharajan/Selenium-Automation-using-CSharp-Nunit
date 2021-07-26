@@ -1,4 +1,4 @@
-﻿using MarsFramework.Global;
+using MarsFramework.Global;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.PageObjects;
@@ -188,7 +188,7 @@ namespace MarsFramework.Pages
             GlobalDefinitions.ExcelLib.PopulateInCollection(Base.ExcelPath, "ShareSkill");
 
 
-            Wait.WaitForElementToBePresent(driver, "XPath", "//a[normalize-space()='Share Skill']",3);
+            Wait.WaitForElementToBePresent(driver, "XPath", "//a[normalize-space()='Share Skill']",5);
             //Click on Shareskillbutton
             ShareSkillButton.Click();
 
@@ -377,8 +377,9 @@ namespace MarsFramework.Pages
             Wait.WaitForElementToBePresent(driver, "XPath", "//a[normalize-space()='Manage Listings']", 3);
             // After Click on Save button Page navigate to Manage Listing
             ManageListingBtn.Click();
-            Wait.WaitForElementToBePresent(driver, "XPath", "//table/tbody/tr[1]/td[8]/div/button[2]", 3);
+            Wait.WaitForElementToBePresent(driver, "XPath", "//table/tbody/tr[1]/td[8]/div/button[2]", 5);
             // Click On Edit button of Saved Share skill
+            //Edit.WaitForElementClickable(driver, 60);
             Edit.Click();
             //Populate the excel data
             GlobalDefinitions.ExcelLib.PopulateInCollection(Base.ExcelPath, "UpdatedServiceListing");
