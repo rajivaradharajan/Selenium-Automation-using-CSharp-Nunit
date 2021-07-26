@@ -6,12 +6,12 @@ using RelevantCodes.ExtentReports;
 
 namespace MarsFramework
 {
-    public class Program
+    public class ShareSkillTestSuite
     {
         [TestFixture,Description("ShareSkill Test Cases")]
         [Parallelizable]
         [Category("Sprint1")]
-        class Shareskilltestsuite: Base
+        class Shareskilltest: Base
         {
             
 
