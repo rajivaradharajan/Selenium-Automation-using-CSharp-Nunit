@@ -1,11 +1,16 @@
-﻿using MarsFramework.Config;
-using MarsFramework.Pages;
+using AventStack.ExtentReports;
+using AventStack.ExtentReports.Reporter;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
-using RelevantCodes.ExtentReports;
+using OpenQA.Selenium.Remote;
 using System;
+using MarsFramework.Config;
+using MarsFramework.Pages;
 using static MarsFramework.Global.GlobalDefinitions;
+
 
 namespace MarsFramework.Global
 {
@@ -23,6 +28,7 @@ namespace MarsFramework.Global
         #region reports
         public static ExtentTest test;
         public static ExtentReports extent;
+        public static ExtentHtmlReporter htmlReporter;
 
 
         #endregion
@@ -50,12 +56,20 @@ namespace MarsFramework.Global
 
             #region Initialise Reports
 
-            extent = new ExtentReports(ReportPath, false, DisplayOrder.NewestFirst);
-            extent.LoadConfig(MarsResource.ReportXMLPath);
-            extent.AddSystemInfo("OS", "Window 10 Home");
-            extent.AddSystemInfo("Host Name", "Raji");
-            extent.AddSystemInfo("Environment", "QA");
-            extent.AddSystemInfo("UserName", "Raji");
+            if (extent == null)
+            {
+                string reportPath = MarsResource.ReportPath;
+                string reportFile = DateTime.Now.ToString().Replace("/", "_").Replace(":", "_").Replace(".", "_");
+                htmlReporter = new ExtentHtmlReporter(reportPath + reportFile);
+                extent = new ExtentReports();
+                extent.AttachReporter(htmlReporter);
+                extent.AddSystemInfo("OS", "Window 10 Home");
+                extent.AddSystemInfo("Host Name", "Raji");
+                extent.AddSystemInfo("Environment", "QA");
+                extent.AddSystemInfo("UserName", "Raji");
+                // adding Config.xml file
+                extent.AddTestRunnerLogs(reportPath + "Extent Config.xml");
+            }
             # endregion
 
             if (MarsResource.IsLogin == "true")
@@ -77,20 +91,24 @@ namespace MarsFramework.Global
 
 
 
-        //[TearDown]
-        //public void TearDown()
-        //{
-        //    Screenshot
-        //   String img = SaveScreenShotClass.SaveScreenshot(GlobalDefinitions.driver, "Report");//AddScreenCapture(@"E:\Dropbox\VisualStudio\Projects\Beehive\TestReports\ScreenShots\");
-        //    test.Log(LogStatus.Info, "Image example: " + img);
-        //    end test. (Reports)
-        //   extent.EndTest(test);
-        //    calling Flush writes everything to the log file(Reports)
-        //    extent.Flush();
-        //    Close the driver:)            
-        //    GlobalDefinitions.driver.Close();
-        //    GlobalDefinitions.driver.Quit();
-        //}
+        [TearDown]
+        public void TearDown()
+        {
+            if (TestContext.CurrentContext.Result.Outcome != ResultState.Success)
+            {
+                //Screenshot
+                String img = SaveScreenShotClass.SaveScreenshot(GlobalDefinitions.driver, "Report"); //AddScreenCapture(@"E:\Dropbox\VisualStudio\Projects\Beehive\TestReports\ScreenShots\");
+                test.Log(Status.Error, "Image example: " + img);
+            }
+
+            //end test. (Reports);
+            extent.RemoveTest(test);
+            //calling Flush writes everything to the log file(Reports)
+            extent.Flush();
+            //Close the driver:)            
+            GlobalDefinitions.driver.Close();
+            GlobalDefinitions.driver.Quit();
+        }
 
         #endregion
 
